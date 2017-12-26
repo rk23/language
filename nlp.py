@@ -43,34 +43,35 @@ def get_next(level, store, repass=False):
         get_next(level + 1, store[word]['next'], repass=repass)
     return
 
+
+def print_word(next_tuple, phrase, frequency, depth, outfile):
+
+    if depth == 5:
+        return
+
+    depth += 1
+
+    for k, v in next_tuple.items():
+        if frequency > 5 and v['frequency'] > 5:
+            outfile.write(phrase + " " +
+                  k + " " +
+                  str(v['frequency']) + "\n")
+
+        spaces = "    " * depth
+
+        print_word(v['next'], spaces + phrase + " " + k, v['frequency'], depth, outfile)
+
+
 for idx, _ in enumerate(words):
     get_next(idx, hash_table)
 
 try:
     sorted_tuples = sorted(hash_table.items(),
                            key=lambda value: value[1]['frequency'],
-                           reverse=False)
+                           reverse=True)
 except Exception as e:
     print(e)
     sys.exit(1)
-
-'''
-next.items()
-value['frequency']
-'''
-
-
-def print_word(next_tuple, phrase, frequency, depth):
-    if depth == 5:
-        return
-    depth += 1
-    for k, v in next_tuple.items():
-        if frequency > 5 and v['frequency'] > 5:
-            print(phrase + " " + k + " " + str(v['frequency']))
-
-        spaces = "    " * depth
-
-        print_word(v['next'], spaces + phrase + " " + k, v['frequency'], depth)
 
 
 with open('output.txt', 'w') as outfile:
@@ -80,50 +81,6 @@ with open('output.txt', 'w') as outfile:
         top_level_word = i[0]
 
         if top_level_frequency > 10:
-            print(top_level_word + " " + top_level_frequency)
+            outfile.write((top_level_word + " " + top_level_frequency) + "\n")
 
-        print_word(i[1]['next'], "    " + top_level_word, top_level_frequency, 0)
-
-
-            # for key, value in i[1]['next'].items():
-        #     if value['frequency'] > 5:
-        #         outfile.write("    " + top_level_word + " " + key + " " + str(
-        #             value['frequency']) + "\n")
-        #
-        #     for ke, va in value['next'].items():
-        #         if value['frequency'] > 5 and va['frequency'] > 1:
-        #             outfile.write("        " + top_level_word + " " +
-        #                 key + " " +
-        #                 ke + " " +
-        #                 str(va['frequency']) + "\n")
-        #
-        #         if va['next'] > 5:
-        #             for k, v in va['next'].items():
-        #                 if v['frequency'] > 1:
-        #                     outfile.write("            " + top_level_word + " " +
-        #                         key + " " +
-        #                         ke + " " +
-        #                         k + " " +
-        #                         str(v['frequency']) + "\n")
-        #
-        #                 for x, y in v['next'].items():
-        #                     if y['frequency'] > 0:
-        #                         outfile.write("                " + top_level_word + " " +
-        #                             key + " " +
-        #                             ke + " " +
-        #                             k + " " +
-        #                             x + " " +
-        #                             str(y['frequency']) + "\n")
-        #
-        #                     if y['next'] > 1:
-        #                         for a, b in y['next'].items():
-        #                             if b['frequency'] > 0:
-        #                                 outfile.write("                    " + top_level_word + " " +
-        #                                     key + " " +
-        #                                     ke + " " +
-        #                                     k + " " +
-        #                                     x + " " +
-        #                                     a + " " +
-        #                                     str(b['frequency']) + "\n")
-
-
+        print_word(i[1]['next'], "    " + top_level_word, top_level_frequency, 0, outfile)
