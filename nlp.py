@@ -3,26 +3,6 @@ import sys
 
 hash_table = {}
 
-with open('source.txt', 'r') as myfile:
-    text = myfile.read()
-words = (text.lower()
-         .replace('\n', ' ')
-         .replace('.', ' ')
-         .replace(',', ' ')
-         .replace("'", ' ')
-         .replace('?', ' ')
-         .replace('"', ' ')
-         .replace(';', ' ')
-         .replace(':', ' ')
-         .replace('-', ' ')
-         .replace('  ', ' ')
-         .split(' '))
-
-not_tracked = ['the', 'and', 'of', 'to', 'in', 'that']
-# not_tracked = []
-
-total = len(words)
-
 
 def get_next(level, store, repass=False):
     word = words[level]
@@ -45,34 +25,55 @@ def get_next(level, store, repass=False):
 
 
 def print_word(next_tuple, phrase, frequency, depth, outfile):
-
-    if depth == 5:
+    if depth == 10:
         return
 
+    sorted_next = sorted(next_tuple.items(),
+                    key=lambda value: value[1]['frequency'],
+                    reverse=True)
+
     depth += 1
-
-    for k, v in next_tuple.items():
-        if frequency > 5 and v['frequency'] > 5:
+    for index, _ in enumerate(sorted_next):
+        word_object = sorted_next[index]
+        word = word_object[0]
+        freq = word_object[1]['frequency']
+        next_word = word_object[1]['next']
+        if frequency > 1 and freq > 1:
             outfile.write(phrase + " " +
-                  k + " " +
-                  str(v['frequency']) + "\n")
-
+                  word + " " +
+                  str(freq) + "\n")
         spaces = "    " * depth
 
-        print_word(v['next'], spaces + phrase + " " + k, v['frequency'], depth, outfile)
+        print_word(next_word, spaces + phrase + " " + word, str(freq), depth, outfile)
+
+
+with open('source.txt', 'r') as myfile:
+    text = myfile.read()
+words = (text.lower()
+         .replace('\n', ' ')
+         .replace('.', ' ')
+         .replace(',', ' ')
+         .replace("'", ' ')
+         .replace('?', ' ')
+         .replace('"', ' ')
+         .replace(';', ' ')
+         .replace(':', ' ')
+         .replace('-', ' ')
+         .replace('  ', ' ')
+         .split(' '))
+
+not_tracked = ['the', 'and', 'of', 'to', 'in', 'that']
+
+total = len(words)
+print("Total words parsed: {}".format(total))
 
 
 for idx, _ in enumerate(words):
     get_next(idx, hash_table)
 
-try:
-    sorted_tuples = sorted(hash_table.items(),
-                           key=lambda value: value[1]['frequency'],
-                           reverse=True)
-except Exception as e:
-    print(e)
-    sys.exit(1)
-
+sorted_tuples = sorted(hash_table.items(),
+                       key=lambda value: value[1]['frequency'],
+                       reverse=True)
 
 with open('output.txt', 'w') as outfile:
     for idx, _ in enumerate(sorted_tuples):
