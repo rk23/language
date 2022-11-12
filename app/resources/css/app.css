@@ -1,0 +1,28 @@
+/* Optional: Makes the sample page fill the window. */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-family: "Arial", "sans-serif";
+    text-align: center;
+    margin-top: 100px;
+}
+
+span {
+    font-size: 20px;
+}
+
+input {
+    margin-left: 20px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: 100px;
+    height: 30px;
+}
+
+ol { counter-reset: item }
+li{ display: block }
+li:before { content: counters(item, ".") " "; counter-increment: item }
