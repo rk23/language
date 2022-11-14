@@ -9,6 +9,7 @@ window.onload = function () {
         exp_li[i].style.cursor = "pointer";
         exp_li[i].onclick = showol;
     };
+
     function showol() {
         nextol = this.nextElementSibling;
         if (nextol.style.display == "block")
