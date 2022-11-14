@@ -1,12 +1,12 @@
 from functions import filter_input, get_next, write_word
 
 SPACES = "  "
-FREQUENCY_DEPTH = 10
+FREQUENCY_DEPTH = 5
 
 database = {}
 exclusion_list = ['the', 'and', 'of', 'to', 'in', 'that']
 
-with open('./data/alchemist.txt', 'r') as myfile:
+with open('./data/source.txt', 'r') as myfile:
     text = myfile.read()
 
 words = filter_input(text)
